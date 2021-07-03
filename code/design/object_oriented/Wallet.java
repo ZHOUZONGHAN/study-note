@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class Wallet {
 
-    // 钱包的唯一编号
+    // 钱包唯一编号
     private String id;
     // 钱包创建的时间
     private long createTime;
