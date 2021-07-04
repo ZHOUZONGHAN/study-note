@@ -235,26 +235,3 @@
       > >   Take消费时，即时检查剩余可用slot量(`tail` - `cursor`)，如小于设定阈值，则补全空闲slots。阈值可通过`paddingFactor`来进行配置（默认50%）。
 > > - 周期填充
       > >   通过Schedule线程，定时补全空闲slots。可通过`scheduleInterval`配置，以应用定时填充功能，并指定Schedule时间间隔。
-
-# 百度Uid-generator二次开发
-
-> Uid-generator是针对全局分发ID，目前需求是需要对每个业务进行隔离，可以允许相同ID出现在不同业务中。
->
-> 获取的ID关键在于seconds、workerId和sequence。在二次开发中，对workerId和sequence进行业务隔离。
->
-> ## workerId
->
-> 为了做到相同ID允许出现在不同业务，即相同的workerId允许出现在不同业务。workerId是机器插入表中的主键ID，因为workerId允许相同，即主键ID允许相同，所以每一个业务需要有一张表。
->
-> workerId从原来的long类型，改为Map集合，Map中key为namespace，value为对应的workerId。
->
-> 在获取workerId时，首先去Map中检查是否存在key为namespace的entry，如果不存在，再去数据库中查找是否存在worker_node_{namespace}的表，如果存在，初始化workerId，反之报错。
->
-> ## sequence
->
-> 不同业务中的sequence也是允许相同的，所以在sequence的保存中，也要从原来的long类型改为Map，Map的key同样是namespace，value为sequence。
->
-> ## CachedUidGenerator
->
-> CachedUidGenerator中ID存储在RingBuffer中，即RingBuffer也需要对业务进行隔离。同理，每一个namespace需要对应一个RingBuffer。
-
